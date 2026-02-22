@@ -1,0 +1,10 @@
+
+fastapi
+uvicorn
+requests
+langgraph
+faiss-cpu
+transformers
+torch
+pydantic
+numpy
