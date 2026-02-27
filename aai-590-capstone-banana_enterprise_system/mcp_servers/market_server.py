@@ -1,6 +1,6 @@
 # mcp_servers/market_server.py
 
-from base_mcp import BaseMCP
+from mcp_servers.base_mcp import BaseMCP
 import requests
 
 mcp = BaseMCP()

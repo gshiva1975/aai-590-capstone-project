@@ -72,7 +72,8 @@ class ResearcherAgent:
     
             if self.social:
                 try:
-                    docs += self.social.call("fetch_social_sentiment", {"ticker": ticker})
+                    #docs += self.social.call("fetch_social_sentiment", {"ticker": ticker})
+                    docs += self.social.call_tool( "fetch_social_sentiment", {"ticker": ticker})
                 except Exception as e:
                     logger.warning(f"Social MCP failed: {e}")
     

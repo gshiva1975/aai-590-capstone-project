@@ -1,6 +1,7 @@
 # mcp_servers/social_server.py
 
-from base_mcp import BaseMCP
+'''
+from mcp_servers.base_mcp import BaseMCP
 import requests
 
 mcp = BaseMCP()
@@ -13,4 +14,15 @@ def fetch_social_sentiment(ticker: str):
 mcp.register("fetch_social_sentiment", fetch_social_sentiment)
 
 app = mcp.app
+'''
 
+
+from mcp.server import Server
+
+server = Server("banana-social")
+
+@server.tool()
+def fetch_social_sentiment(ticker: str) -> list[str]:
+    return [f"{ticker} trending positively on investor forums"]
+
+app = server.app
