@@ -1,127 +1,119 @@
-# 🍌 Banana Enterprise System  
-### AAI-940 Capstone Project  
+# 🍌 Banana Enterprise System
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
-![FastAPI](https://img.shields.io/badge/FastAPI-Production-green.svg)
-![Kubernetes](https://img.shields.io/badge/Kubernetes-Minikube-blue.svg)
-![LangGraph](https://img.shields.io/badge/LangGraph-Agent%20Orchestration-purple.svg)
-![MCP](https://img.shields.io/badge/Open%20MCP-JSON--RPC%202.0-orange.svg)
-![FAISS](https://img.shields.io/badge/Vector%20Store-FAISS-lightgrey.svg)
-![FinBERT](https://img.shields.io/badge/Sentiment-FinBERT-red.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Python](https://img.shields.io/badge/Python-3.12-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Framework-green)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-Minikube-blue)
+![LangGraph](https://img.shields.io/badge/LangGraph-Agentic-purple)
+![JSON-RPC](https://img.shields.io/badge/JSON--RPC-2.0-orange)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
 ---
 
-## 🚀 Overview
+## 🚀 Distributed Agentic Financial Analysis Platform
 
-**Banana Enterprise System** is a distributed, agentic financial analysis platform built using:
+Banana is a **distributed, agentic financial analysis system** built with:
 
-- FastAPI — API layer  
-- LangGraph — Agent orchestration  
-- FAISS — Vector storage & retrieval  
-- FinBERT — Financial sentiment scoring  
-- Open MCP — Model Context Protocol (JSON-RPC 2.0 tool invocation)  
-- Kubernetes (Minikube) — Distributed microservices deployment  
+- **FastAPI**
+- **LangGraph (Agent Orchestration)**
+- **FAISS Vector Store**
+- **FinBERT Sentiment Model**
+- **Open MCP (JSON-RPC 2.0 compliant)**
+- **Kubernetes (Minikube)**
 
-This system demonstrates distributed agentic reasoning using structured MCP tool calls within a Kubernetes architecture.
+It integrates real market data (Alpha Vantage), social sentiment, and SEC filings through distributed MCP microservices.
 
----
-
-##  System Status
-
-✔ banana-api successfully called banana-social  
-✔ MCP JSON-RPC client operational  
-✔ Social MCP server responding correctly  
-✔ Response parsing validated (result field)  
-✔ MCP-returned documents embedded dynamically  
-✔ FAISS vector store updated  
-✔ LangGraph pipeline executed successfully  
-✔ FinBERT sentiment scoring applied  
-✔ Threshold-based decision logic active  
-✔ Fully distributed Kubernetes deployment running  
+This is not a demo chatbot — it is a scalable, production-style agentic platform.
 
 ---
 
-##  Architecture
+# 🏗 Architecture Overview
 
-banana-api (Orchestrator + MCP Client)  
-        ↓  
-banana-social (MCP Tool Server)  
+Client
+↓
+banana-api (LangGraph Orchestrator)
+↓
+JSON-RPC 2.0 MCP Client
+↓
+| banana-market (Market MCP) |
+| banana-sec (SEC MCP) |
+| banana-social (Social MCP) |
 
----
+↓
+External APIs (Alpha Vantage, SEC)
+↓
+Embedding → FAISS → Retrieval → FinBERT
 
-##  Execution Flow
-
-Client  
-↓  
-FastAPI (/analyze)  
-↓  
-BananaService  
-↓  
-LangGraph Orchestrator  
-↓  
-MCP Client (JSON-RPC 2.0)  
-↓  
-banana-social MCP Server  
-↓  
-Tool Execution  
 
 ---
 
-##  Prerequisites
+# 📦 Microservices
 
-Ensure the following are installed and running:
+| Service | Purpose |
+|----------|----------|
+| banana-api | Agent orchestrator + embedding + RAG |
+| banana-market | Market data via Alpha Vantage |
+| banana-sec | SEC filings |
+| banana-social | Social sentiment tool |
 
-- Python 3.10+
-- Docker Desktop
-- Minikube
-- kubectl
-- Git
+---
 
-### Verify Setup
+# 🔐 Secrets Configuration
+
+Create Kubernetes secret for Alpha Vantage:
 
 ```bash
+kubectl create secret generic alpha-vantage-secret \
+  --from-literal=ALPHA_VANTAGE_API_KEY=YOUR_REAL_KEY
+
+Market MCP injects it via:
+
+env:
+  - name: ALPHA_VANTAGE_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: alpha-vantage-secret
+        key: ALPHA_VANTAGE_API_KEY
+🛠 Prerequisites
+
+Python 3.12+
+
+Docker Desktop (running)
+
+Minikube
+
+kubectl
+
+Git
+
+Verify:
+
 docker info
 minikube status
 kubectl get nodes
-
-Installation & Deployment Guide
-1️⃣ Clone Repository
+📥 Clone Repository
 git clone https://github.com/gshiva1975/aai-590-capstone-project.git
-cd aai-590-capstone-project/aai-590-capstone-banana_enterprise_system
-
-2️⃣ Start Minikube
+cd aai-590-capstone-banana_enterprise_system
+🚀 Start Minikube
 minikube start --driver=docker
 kubectl get nodes
-
-Expected output:
-
-minikube   Ready
-3️⃣ Build Docker Images (Inside Minikube)
-
-Switch Docker context:
-
+🐳 Build Docker Images Inside Minikube
 eval $(minikube docker-env)
 
-Build Banana API:
-
-docker build -t banana-api:v4 .
-
-Build Social MCP Server:
-
-docker build -t banana-social-mcp:v2 -f mcp_servers/Dockerfile.social .
-
-Exit Minikube Docker context:
+docker build -t banana-api:v2 .
+docker build -t banana-market:v1 -f mcp_servers/Dockerfile.market .
+docker build -t banana-sec:v1 -f mcp_servers/Dockerfile.sec .
+docker build -t banana-social:v1 -f mcp_servers/Dockerfile.social .
 
 eval $(minikube docker-env -u)
-4️⃣ Deploy to Kubernetes
+☸️ Deploy to Kubernetes
+kubectl apply -f banana-market-deployment.yaml
+kubectl apply -f banana-market-service.yaml
 
-Deploy Social MCP:
+kubectl apply -f banana-sec-deployment.yaml
+kubectl apply -f banana-sec-service.yaml
 
 kubectl apply -f banana-social-deployment.yaml
 kubectl apply -f banana-social-service.yaml
-
-Deploy Banana API:
 
 kubectl apply -f banana-api-deployment.yaml
 kubectl apply -f banana-api-service.yaml
@@ -129,112 +121,88 @@ kubectl apply -f banana-api-service.yaml
 Verify:
 
 kubectl get pods
+kubectl get svc
 
-Expected:
+All pods should show Running.
 
-banana-api-xxxxx      1/1 Running
-banana-social-xxxxx   1/1 Running
+🌐 Access banana-api
 
-5️⃣ Expose API Locally
+Services are cluster-internal, so port-forward is required:
+
 kubectl port-forward deployment/banana-api 8000:8000
 
-Keep this terminal running.
+Keep this terminal open.
 
-6️⃣ Run Test Queries
+🧪 Test Full End-to-End Analysis
+curl -X POST http://localhost:8000/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"query":"How is AAPL performing?"}'
+Expected Flow:
 
-In a new terminal:
+Extract ticker
 
-python3 test_queries.py
+JSON-RPC tool calls to MCP services
 
-Expected:
+Market + SEC + Social data fetched
 
-Dynamic MCP tool invocation
+Documents embedded into FAISS
 
-Sentiment scoring results
+Semantic retrieval
 
-JSON responses
+FinBERT sentiment scoring
 
-HTTP 200 status codes
+Threshold logic applied
 
-🔍 Optional: Verify MCP Connectivity
+Final structured JSON response returned
 
-Run test pod:
+🔎 Test Individual MCP (JSON-RPC 2.0)
+
+From inside cluster:
 
 kubectl run test-pod --rm -it --image=curlimages/curl -- sh
 
-Inside pod:
+Then:
 
-curl -X POST http://banana-social:8003/mcp \
+curl -X POST http://banana-market:8003/mcp \
   -H "Content-Type: application/json" \
   -d '{
     "jsonrpc":"2.0",
     "method":"tools/call",
     "params":{
-      "name":"fetch_social_sentiment",
+      "name":"fetch_market_data",
       "arguments":{"ticker":"AAPL"}
     },
     "id":"1"
   }'
 
-Expected:
+Expected response:
 
 {
   "jsonrpc": "2.0",
-  "result": ["AAPL trending positively on investor forums"],
+  "result": [
+    "AAPL (2026-02-27) — Open: $272.52, High: $272.81, Low: $262.89, Close: $264.18, Volume: 72184563"
+  ],
   "id": "1"
 }
-🔄 Updating After Code Changes
+🧠 Key Features
+
+✔ Distributed MCP microservices
+✔ JSON-RPC 2.0 compliant tool calling
+✔ Kubernetes-native architecture
+✔ Secret-based API key injection
+✔ Real market data integration
+✔ FAISS vector memory
+✔ Agentic orchestration (LangGraph)
+✔ FinBERT sentiment scoring
+
+🔄 Restart After Code Changes
 
 Rebuild image:
 
 eval $(minikube docker-env)
-docker build -t banana-api:v4 .
+docker build -t banana-market:v1 -f mcp_servers/Dockerfile.market .
 eval $(minikube docker-env -u)
 
 Restart deployment:
 
-kubectl rollout restart deployment banana-api
-🧹 Cleanup
-
-Stop port-forward:
-
-Ctrl + C
-
-Delete cluster:
-
-minikube delete
-
-
-🧠 Key Capabilities
-
-Distributed MCP-based tool invocation
-
-JSON-RPC 2.0 compliant
-
-FAISS semantic vector retrieval
-
-FinBERT financial sentiment scoring
-
-Kubernetes-native microservice deployment
-
-Vendor-neutral Open MCP architecture
-
-Agentic orchestration via LangGraph
-
-
-📌 Important Notes
-
-Port-forward must be re-run after pod restarts
-
-Docker must be running before Minikube
-
-Minikube must be started before deployment
-
-MCP services communicate via Kubernetes DNS
-
-
-📊 Project Type
-
-Distributed Agentic AI System
-Enterprise-ready Kubernetes Architecture
-MCP-based Tool-Orchestrated Financial Analysis
+kubectl rollout restart deployment banana-market
