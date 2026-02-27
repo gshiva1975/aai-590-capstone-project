@@ -73,7 +73,9 @@ env:
       secretKeyRef:
         name: alpha-vantage-secret
         key: ALPHA_VANTAGE_API_KEY
-🛠 Prerequisites
+
+
+# 🛠 **Prerequisites**
 
 Python 3.12+
 
@@ -83,20 +85,23 @@ Minikube
 
 kubectl
 
-Git
+# **Git**
 
 Verify:
 
 docker info
 minikube status
 kubectl get nodes
-📥 Clone Repository
+
+# 📥 **Clone Repository**
 git clone https://github.com/gshiva1975/aai-590-capstone-project.git
 cd aai-590-capstone-banana_enterprise_system
-🚀 Start Minikube
+
+# 🚀 **Start Minikube**
 minikube start --driver=docker
 kubectl get nodes
-🐳 Build Docker Images Inside Minikube
+
+# 🐳 **Build Docker Images Inside Minikube**
 eval $(minikube docker-env)
 
 docker build -t banana-api:v2 .
@@ -105,7 +110,8 @@ docker build -t banana-sec:v1 -f mcp_servers/Dockerfile.sec .
 docker build -t banana-social:v1 -f mcp_servers/Dockerfile.social .
 
 eval $(minikube docker-env -u)
-☸️ Deploy to Kubernetes
+
+# ☸️ Deploy to Kubernetes
 kubectl apply -f banana-market-deployment.yaml
 kubectl apply -f banana-market-service.yaml
 
@@ -118,14 +124,14 @@ kubectl apply -f banana-social-service.yaml
 kubectl apply -f banana-api-deployment.yaml
 kubectl apply -f banana-api-service.yaml
 
-Verify:
+# **Verify:**
 
 kubectl get pods
 kubectl get svc
 
 All pods should show Running.
 
-🌐 Access banana-api
+# 🌐 **Access banana-api**
 
 Services are cluster-internal, so port-forward is required:
 
@@ -133,7 +139,7 @@ kubectl port-forward deployment/banana-api 8000:8000
 
 Keep this terminal open.
 
-🧪 Test Full End-to-End Analysis
+# 🧪 **Test Full End-to-End Analysis**
 curl -X POST http://localhost:8000/analyze \
   -H "Content-Type: application/json" \
   -d '{"query":"How is AAPL performing?"}'
@@ -155,7 +161,7 @@ Threshold logic applied
 
 Final structured JSON response returned
 
-🔎 Test Individual MCP (JSON-RPC 2.0)
+# 🔎 **Test Individual MCP (JSON-RPC 2.0)**
 
 From inside cluster:
 
@@ -184,7 +190,7 @@ Expected response:
   ],
   "id": "1"
 }
-🧠 Key Features
+# 🧠 **Key Features**
 
 ✔ Distributed MCP microservices
 ✔ JSON-RPC 2.0 compliant tool calling
@@ -195,7 +201,7 @@ Expected response:
 ✔ Agentic orchestration (LangGraph)
 ✔ FinBERT sentiment scoring
 
-🔄 Restart After Code Changes
+# 🔄 **Restart After Code Changes**
 
 Rebuild image:
 
