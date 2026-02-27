@@ -1,12 +1,24 @@
+# mcp_servers/market_server.py
 
-from base_mcp import BaseMCPServer
+from base_mcp import BaseMCP
+import requests
 
-def fetch_market_data(ticker="AAPL"):
-    return [
-        f"{ticker} RSI bullish at 68",
-        f"{ticker} volume breakout observed"
-    ]
+mcp = BaseMCP()
 
-server = BaseMCPServer("Market")
-server.register_tool("fetch_market_data", fetch_market_data)
-app = server.app
+def fetch_market_data(ticker: str):
+    # Example: Alpha Vantage API
+    url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey=YOUR_API_KEY"
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        return []
+
+    data = response.json()
+
+    # Simplified summary
+    return [f"{ticker} shows high trading volume trend"]
+
+mcp.register("fetch_market_data", fetch_market_data)
+
+app = mcp.app
+

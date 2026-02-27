@@ -1,50 +1,46 @@
+# banana_service/service.py
 
-from banana_service.config import settings
-from banana_service.ingestion.mcp_client import MCPClient
-from banana_service.core.vector_store import VectorStore
+#from banana_service.ingestion.mcp_client import MCPClient
 from banana_service.core.embedding_model import EmbeddingModel
-from banana_service.core.financial_model import FinancialSentimentModel
-from banana_service.agents.researcher import ResearcherAgent
-from banana_service.agents.analyst import AnalystAgent
-from banana_service.agents.reflection import ReflectionAgent
-from banana_service.agents.scribe import ScribeAgent
-from banana_service.agents.orchestrator import BananaOrchestrator
-from logger import setup_logger
+from banana_service.core.vector_store import VectorStore
+from banana_service.agents.orchestrator import Orchestrator
+from banana_service.agents.reflection import ReflectionAgent 
+from banana_service.agents.researcher import ResearcherAgent 
+from banana_service.agents.analyst import AnalystAgent 
+from banana_service.agents.scribe import ScribeAgent 
+from banana_service.config import settings
 
-logger = setup_logger("Service")
 
 class BananaService:
     def __init__(self):
-        logger.info("Initializing service")
-        self.sec = MCPClient(settings.MCP_SEC_URL)
-        self.market = MCPClient(settings.MCP_MARKET_URL)
-        self.social = MCPClient(settings.MCP_SOCIAL_URL)
+        self.embed = EmbeddingModel("sentence-transformers/all-MiniLM-L6-v2")
+        self.vector_store = VectorStore()
 
-        self.embed = EmbeddingModel(settings.EMBEDDING_MODEL)
-        self.model = FinancialSentimentModel(settings.FIN_MODEL)
-        self.store = VectorStore()
-
-        self._load_data()
-
-        researcher = ResearcherAgent(self.store, self.embed)
-        analyst = AnalystAgent(self.model)
+        researcher = ResearcherAgent(self.vector_store, self.embed)
+        analyst = AnalystAgent()
         reflection = ReflectionAgent()
         scribe = ScribeAgent()
 
-        self.workflow = BananaOrchestrator(
-            researcher, analyst, reflection, scribe,
-            settings.CONFIDENCE_THRESHOLD
+        self.workflow = Orchestrator(
+            researcher,
+            analyst,
+            reflection,
+            scribe,
+            threshold=0.75
         )
 
-    def _load_data(self):
-        logger.info("Loading MCP data")
-        docs = (
-            self.sec.call("fetch_sec_filings") +
-            self.market.call("fetch_market_data") +
-            self.social.call("fetch_social_sentiment")
-        )
+        self._load_initial_data()
+
+    def _load_initial_data(self):
+        docs = [
+            "Apple revenue increased 12% year-over-year.",
+            "RSI indicates moderate overbought conditions.",
+            "Investor sentiment trending positive in forums."
+        ]
+
         vectors = [self.embed.encode(d) for d in docs]
-        self.store.add(vectors, docs)
+        self.vector_store.add(vectors, docs)
 
-    def analyze(self, query):
+    def analyze(self, query: str):
         return self.workflow.run(query)
+

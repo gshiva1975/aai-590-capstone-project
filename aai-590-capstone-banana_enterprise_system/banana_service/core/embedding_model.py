@@ -6,7 +6,7 @@ from logger import setup_logger
 logger = setup_logger("Embedding")
 
 class EmbeddingModel:
-    def __init__(self, name):
+    def __init__(self, name="sentence-transformers/all-MiniLM-L6-v2"):
         self.tokenizer = AutoTokenizer.from_pretrained(name)
         self.model = AutoModel.from_pretrained(name)
 

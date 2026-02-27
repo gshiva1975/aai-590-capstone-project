@@ -1,0 +1,26 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: banana-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: banana-api
+  template:
+    metadata:
+      labels:
+        app: banana-api
+    spec:
+      containers:
+      - name: banana-api
+        image: banana-api:v2
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            memory: "2Gi"
+            cpu: "500m"
+

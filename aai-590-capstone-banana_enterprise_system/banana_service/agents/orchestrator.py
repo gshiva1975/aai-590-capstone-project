@@ -4,7 +4,7 @@ from logger import setup_logger
 
 logger = setup_logger("Orchestrator")
 
-class BananaOrchestrator:
+class Orchestrator:
     def __init__(self, researcher, analyst, reflection, scribe, threshold):
         graph = StateGraph(dict)
 
