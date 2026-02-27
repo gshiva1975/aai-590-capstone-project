@@ -27,7 +27,7 @@ This system demonstrates distributed agentic reasoning using structured MCP tool
 
 ---
 
-## ✅ System Status
+##  System Status
 
 ✔ banana-api successfully called banana-social  
 ✔ MCP JSON-RPC client operational  
@@ -42,7 +42,7 @@ This system demonstrates distributed agentic reasoning using structured MCP tool
 
 ---
 
-## 🏗 Architecture
+##  Architecture
 
 banana-api (Orchestrator + MCP Client)  
         ↓  
@@ -50,7 +50,7 @@ banana-social (MCP Tool Server)
 
 ---
 
-## 🔁 Execution Flow
+##  Execution Flow
 
 Client  
 ↓  
@@ -68,7 +68,7 @@ Tool Execution
 
 ---
 
-## 🛠 Prerequisites
+##  Prerequisites
 
 Ensure the following are installed and running:
 
@@ -89,6 +89,7 @@ Installation & Deployment Guide
 1️⃣ Clone Repository
 git clone https://github.com/gshiva1975/aai-590-capstone-project.git
 cd aai-590-capstone-project/aai-590-capstone-banana_enterprise_system
+
 2️⃣ Start Minikube
 minikube start --driver=docker
 kubectl get nodes
@@ -133,6 +134,7 @@ Expected:
 
 banana-api-xxxxx      1/1 Running
 banana-social-xxxxx   1/1 Running
+
 5️⃣ Expose API Locally
 kubectl port-forward deployment/banana-api 8000:8000
 
@@ -201,6 +203,8 @@ Ctrl + C
 Delete cluster:
 
 minikube delete
+
+
 🧠 Key Capabilities
 
 Distributed MCP-based tool invocation
@@ -217,6 +221,7 @@ Vendor-neutral Open MCP architecture
 
 Agentic orchestration via LangGraph
 
+
 📌 Important Notes
 
 Port-forward must be re-run after pod restarts
@@ -226,6 +231,7 @@ Docker must be running before Minikube
 Minikube must be started before deployment
 
 MCP services communicate via Kubernetes DNS
+
 
 📊 Project Type
 
