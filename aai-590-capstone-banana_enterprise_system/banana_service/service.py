@@ -1,46 +1,44 @@
-# banana_service/service.py
-
-#from banana_service.ingestion.mcp_client import MCPClient
-from banana_service.core.embedding_model import EmbeddingModel
-from banana_service.core.vector_store import VectorStore
-from banana_service.agents.orchestrator import Orchestrator
-from banana_service.agents.reflection import ReflectionAgent 
-from banana_service.agents.researcher import ResearcherAgent 
-from banana_service.agents.analyst import AnalystAgent 
-from banana_service.agents.scribe import ScribeAgent 
 from banana_service.config import settings
 
 
 class BananaService:
-    def __init__(self):
-        self.embed = EmbeddingModel("sentence-transformers/all-MiniLM-L6-v2")
-        self.vector_store = VectorStore()
 
-        researcher = ResearcherAgent(self.vector_store, self.embed)
-        analyst = AnalystAgent()
-        reflection = ReflectionAgent()
-        scribe = ScribeAgent()
+    def __init__(
+        self,
+        llm,
+        store=None,
+        embed=None,
+        researcher_agent=None
+    ):
+        self.mode = settings.EXPERIMENT_MODE
+        self.llm = llm
 
-        self.workflow = Orchestrator(
-            researcher,
-            analyst,
-            reflection,
-            scribe,
-            threshold=0.75
-        )
+        if self.mode == "BASELINE":
 
-        self._load_initial_data()
+            # Import ONLY baseline components
+            from banana_service.baseline_model import BaselineFinancialModel
 
-    def _load_initial_data(self):
-        docs = [
-            "Apple revenue increased 12% year-over-year.",
-            "RSI indicates moderate overbought conditions.",
-            "Investor sentiment trending positive in forums."
-        ]
+            self.engine = BaselineFinancialModel(llm)
 
-        vectors = [self.embed.encode(d) for d in docs]
-        self.vector_store.add(vectors, docs)
+        elif self.mode == "OPTIMIZED":
+
+            # Import optimized pipeline ONLY when needed
+            from banana_service.optimized_pipeline import OptimizedBananaPipeline
+
+            if store is None or embed is None or researcher_agent is None:
+                raise ValueError(
+                    "OPTIMIZED mode requires store, embed, and researcher_agent."
+                )
+
+            self.engine = OptimizedBananaPipeline(
+                llm=llm,
+                store=store,
+                embed=embed,
+                researcher_agent=researcher_agent
+            )
+
+        else:
+            raise ValueError(f"Unsupported EXPERIMENT_MODE: {self.mode}")
 
     def analyze(self, query: str):
-        return self.workflow.run(query)
-
+        return self.engine.analyze(query)

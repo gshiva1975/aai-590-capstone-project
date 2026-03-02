@@ -8,3 +8,7 @@ transformers
 torch
 pydantic
 numpy
+accelerate
+bitsandbytes
+sentence-transformers
+scikit-learn

@@ -1,13 +1,19 @@
+# banana_service/config.py
+
+import os
 
 class Settings:
-    MCP_SEC_URL = "http://localhost:8001/mcp"
-    MCP_MARKET_URL = "http://localhost:8002/mcp"
-    MCP_SOCIAL_URL = "http://banana-social:8003/mcp"
-    MCP_SEC_URL = None
-    MCP_MARKET_URL = None
-#    MCP_SOCIAL_URL = None
-    EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
-    FIN_MODEL = "ProsusAI/finbert"
-    CONFIDENCE_THRESHOLD = 0.75
+    def __init__(self):
+        self.EXPERIMENT_MODE = os.getenv("EXPERIMENT_MODE", "OPTIMIZED")
+
+        if self.EXPERIMENT_MODE not in ["BASELINE", "OPTIMIZED"]:
+            raise ValueError(
+                f"Invalid EXPERIMENT_MODE: {self.EXPERIMENT_MODE}. "
+                "Must be BASELINE or OPTIMIZED."
+            )
+
+        self.MCP_MARKET_URL = os.getenv("MCP_MARKET_URL")
+        self.MCP_SEC_URL = os.getenv("MCP_SEC_URL")
+        self.MCP_SOCIAL_URL = os.getenv("MCP_SOCIAL_URL")
 
 settings = Settings()

@@ -32,3 +32,8 @@ spec:
               value: "http://banana-sec:8004/mcp"
             - name: MCP_SOCIAL_URL
               value: "http://banana-social:8003/mcp"
+            - name: EXPERIMENT_MODE
+              valueFrom:
+               configMapKeyRef:
+                 name: banana-config
+                 key: EXPERIMENT_MODE

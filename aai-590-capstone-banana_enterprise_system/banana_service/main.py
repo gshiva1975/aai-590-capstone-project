@@ -1,22 +1,40 @@
-
 from fastapi import FastAPI
-from pydantic import BaseModel
 from banana_service.service import BananaService
-from logger import setup_logger, generate_request_id
+from banana_service.llm import LocalLlamaLLM
+from banana_service.config import settings
 
-logger = setup_logger("API")
+app = FastAPI()
 
-app = FastAPI(title="BANANA Enterprise Agentic AI")
+my_llm = LocalLlamaLLM()
 
-service = BananaService()
+if settings.EXPERIMENT_MODE == "BASELINE":
 
-class QueryRequest(BaseModel):
-    query: str
+    banana_service = BananaService(
+        llm=my_llm
+    )
+
+elif settings.EXPERIMENT_MODE == "OPTIMIZED":
+
+    from banana_service.core.vector_store import VectorStore
+    from banana_service.core.embedding_model import EmbeddingModel
+    from banana_service.agents.researcher import ResearcherAgent
+
+    my_store = VectorStore(dim=384)
+    my_embedder = EmbeddingModel()
+    my_researcher = ResearcherAgent(my_store, my_embedder)
+
+    banana_service = BananaService(
+        llm=my_llm,
+        store=my_store,
+        embed=my_embedder,
+        researcher_agent=my_researcher
+    )
+
+else:
+    raise ValueError(f"Unsupported EXPERIMENT_MODE: {settings.EXPERIMENT_MODE}")
+
 
 @app.post("/analyze")
-def analyze(req: QueryRequest):
-    rid = generate_request_id()
-    logger.info(f"[{rid}] Incoming request")
-    result = service.analyze(req.query)
-    logger.info(f"[{rid}] Completed")
-    return result
+def analyze(request: dict):
+    query = request["query"]
+    return banana_service.analyze(query)

@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+.env
+.env.*
+
+# MacOS
+.DS_Store
+
+# Logs
+*.log
+
+# FAISS index files (if saved later)
+*.index
+
+# HuggingFace cache
+.cache/
+~/.cache/
+huggingface/
+
+# VSCode
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Docker
+*.tar
+
+# Minikube / k8s local
+*.yaml.bak
