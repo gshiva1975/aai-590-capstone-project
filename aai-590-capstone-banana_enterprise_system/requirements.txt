@@ -3,6 +3,8 @@ fastapi
 uvicorn
 requests
 langgraph
+langchain_community
+langchain
 faiss-cpu
 transformers
 torch
@@ -12,3 +14,4 @@ accelerate
 bitsandbytes
 sentence-transformers
 scikit-learn
+chromadb
